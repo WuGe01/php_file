@@ -36,7 +36,7 @@ if(!empty($_FILES) && $_FILES['img']['error']==0){
  <!----建立你的表單及設定編碼----->
 
  <form action="upload.php" method="post" enctype="multipart/form-data">
-  檔案：<input type="file" name="img[]" ><br>
+  檔案：<input type="file" name="img" ><br>
   <input type="submit" value="上傳">
 </form>
 

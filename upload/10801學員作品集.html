@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>泰山職訓區-PHP程式班-學員作品</title>
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+  <style>
+    *{
+      box-sizing: border-box;
+      padding:0;
+      margin:0;
+    }
+    body {
+      width: 550px;
+      max-width: 1024px;
+      margin: auto;
+      padding:20px 0;
+      font-family: "微軟正黑體",Arial, Helvetica, sans-serif;
+    }
+    #list{
+      display:flex;
+      flex-wrap: wrap;
+
+    }
+    #list div{
+      width:100px;
+      font-size:30px;
+      font-weight:bolder;
+      height:80px;
+      border:1px solid #ccc;
+      box-shadow: 0 0 5px #999;
+      
+      text-align: center;
+      line-height:80px;
+      position:relative;
+      left:0;
+      top:0;
+      transition: left 0.5s,top 0.5s;
+      margin:5px;
+    }
+    #list div:hover{
+      top:-5px;
+     /*  transform: translate(-2px,-2px); */
+      transition: left 0.5s,top 0.5s;
+    }
+    #list div a{
+      display:block;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>學員作品</h1>
+<div id="list">
+
+
+</div>
+</body>
+
+</html>
+<script>
+
+  for(i=1;i<=25;i++){
+  let stu=document.createElement("div");
+  let a=document.createElement("a")
+  let num=(i/100).toFixed(2)
+    num=num.substr(num.indexOf(".")+1);
+  
+  a.setAttribute("href","http://220.128.133.15/s10801"+num)
+  a.append(num)
+  stu.appendChild(a);
+    $("#list").append(stu)
+
+  }
+  
+</script>
