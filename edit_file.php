@@ -1,14 +1,15 @@
 <?php
-$dsn="mysql:host=localhost;charset=utf8;dbname=upload";
-$pdo=new PDO($dsn,"root","mack");
+$dsn="mysql:host=localhost;charset=utf8;dbname=";
+$pdo=new PDO($dsn,"","");
 
 if(!empty($_FILES) && $_FILES['file']['error']==0){
+    $note=$_POST['note'];
     $type=$_FILES['file']['type'];
     $filename=$_FILES['file']['name'];
-    $path="./upload/";
+    $path="./upload/" . $filename;
     $updateTime=date("Y-m-d H:i:s");
     $id=$_POST['id'];
-    move_uploaded_file($_FILES['file']['tmp_name'] , $path . $filename);
+    move_uploaded_file($_FILES['file']['tmp_name'] , $path );
 
     //刪除原本的檔案
     $sql="select * from files where id='$id'";
@@ -17,7 +18,7 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
     unlink($origin_file);
 
     //更新資料
-    $sql="update files set name='$filename',type='$type',update_time='$updateTime',path='" . $path . $filename . "' where id='$id'";
+    $sql="update files set name='$filename',type='$type',update_time='$updateTime',path='$path',note='$note' where id='$id'";
 
     $result=$pdo->exec($sql);
     if($result==1){
@@ -33,6 +34,16 @@ $sql="select * from files where id='$id'";
 $data=$pdo->query($sql)->fetch();
 
 ?>
+<style>
+table{
+  border-collapse:collapse;
+}
+td{
+  padding:5px;
+  border:1px solid #ccc;
+}
+
+</style>
 <form action="edit_file.php" method="post" enctype="multipart/form-data">
 <table>
     <tr>
@@ -57,8 +68,9 @@ $data=$pdo->query($sql)->fetch();
         <td>create_time</td>
         <td><?=$data['create_time'];?></td>
     </tr>
-</table>
-更新檔案:<input type="file" name="file"><br>
+</table><br>
+更新檔案:<input type="file" name="file"><br><br>
+說明:<input type="text" name="note" value="<?=$data['note'];?>"><br><br>
 <input type="hidden" name="id" value="<?=$data['id'];?>">
 <input type="submit" value="更新">
 </form>

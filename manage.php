@@ -5,26 +5,31 @@
  * 3.取得檔案資訊並寫入資料表
  * 4.製作檔案管理功能頁面
  */
-$dsn="mysql:host=localhost;charset=utf8;dbname=upload";
-$pdo=new PDO($dsn,"root","mack");
+$dsn="mysql:host=localhost;charset=utf8;dbname=";
+$pdo=new PDO($dsn,"","");
 
 if(!empty($_FILES) && $_FILES['file']['error']==0){
-   
+
+    $note=$_POST['note'];
     $type=$_FILES['file']['type'];
     $filename=$_FILES['file']['name'];
-    $path="./upload/";
+    $path="./upload/" . $filename;
     
-    move_uploaded_file($_FILES['file']['tmp_name'] , $path . $filename);
+    move_uploaded_file($_FILES['file']['tmp_name'] , $path);
 
-    $sql="insert into files (`name`,`type`,`path`) values('$filename','$type','" . $path . $filename . "')";
+    $sql="insert into files (`name`,`type`,`path`,`note`) values('$filename','$type','$path','$note')";
 
     $result=$pdo->exec($sql);
-    if($result==1){
-        echo "上傳成功";
-    }else{
-        echo "DB有誤";
-    }
 
+    if($result==1){
+
+        echo "上傳成功";
+
+    }else{
+
+        echo "DB有誤";
+
+    }
 }
 
 ?>
@@ -51,7 +56,8 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
 <h1 class="header">檔案管理練習</h1>
 <!----建立上傳檔案表單及相關的檔案資訊存入資料表機制----->
 <form action="manage.php" method="post" enctype="multipart/form-data">
-  檔案：<input type="file" name="file" ><br>
+  檔案：<input type="file" name="file" ><br><br>
+  說明：<input type="text" name="note" ><br>
   <input type="submit" value="上傳">
 </form>
 
@@ -59,11 +65,13 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
 
 <table>
     <tr>
-        <td>id</td>
-        <td>name</td>
-        <td>type</td>
-        <td>path</td>
-        <td>create time</td>
+        <td>編號</td>
+        <td>檔名</td>
+        <td>類型</td>
+        <td>縮圖</td>
+        <td>路徑</td>
+        <td>說明</td>
+        <td>首次上傳</td>
         <td>操作</td>
     </tr>
 
@@ -76,7 +84,9 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
         <td><?=$file['id'];?></td>
         <td><?=$file['name'];?></td>
         <td><?=$file['type'];?></td>
+        <td><img src="<?=$file['path'];?>" style="width:100px;height:50px;"></td>
         <td><?=$file['path'];?></td>
+        <td><?=$file['note'];?></td>
         <td><?=$file['create_time'];?></td>
         <td>
             <a href="edit_file.php?id=<?=$file['id'];?>">更新檔案</a>
