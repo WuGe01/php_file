@@ -7,8 +7,25 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
     $filename=$_FILES['file']['name'];
     $path="./upload/";
     $updateTime=date("Y-m-d H:i:s");
+    $origin_name=$_FILES['file']['name'];
+    $save_name=md5(time().$_FILES['file']['name']);
+    switch($_FILES['file']['type']){
+        case "image/jpeg":
+            $subname=".jpg";
+        break;
+        case "image/png":
+            $subname=".png";
+        break;
+        case "image/gif":
+            $subname=".gif";
+        break;
+        default:
+            $subname=".other";
+    }
+
+    $path="./upload/".$save_name.$subname;    
     $id=$_POST['id'];
-    move_uploaded_file($_FILES['file']['tmp_name'] , $path . $filename);
+    move_uploaded_file($_FILES['file']['tmp_name'] , $path );
 
     //刪除原本的檔案
     $sql="select * from files where id='$id'";
@@ -17,7 +34,7 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
     unlink($origin_file);
 
     //更新資料
-    $sql="update files set name='$filename',type='$type',update_time='$updateTime',path='" . $path . $filename . "' where id='$id'";
+    $sql="update files set name='$origin_name',type='$type',update_time='$updateTime',path=' $path ' where id='$id'";
 
     $result=$pdo->exec($sql);
     if($result==1){

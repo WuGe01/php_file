@@ -11,12 +11,27 @@ $pdo=new PDO($dsn,"root","mack");
 if(!empty($_FILES) && $_FILES['file']['error']==0){
    
     $type=$_FILES['file']['type'];
-    $filename=$_FILES['file']['name'];
-    $path="./upload/";
-    
-    move_uploaded_file($_FILES['file']['tmp_name'] , $path . $filename);
+    $origin_name=$_FILES['file']['name'];
+    $save_name=md5(time().$_FILES['file']['name']);
+    switch($_FILES['file']['type']){
+        case "image/jpeg":
+            $subname=".jpg";
+        break;
+        case "image/png":
+            $subname=".png";
+        break;
+        case "image/gif":
+            $subname=".gif";
+        break;
+        default:
+            $subname=".other";
+    }
 
-    $sql="insert into files (`name`,`type`,`path`) values('$filename','$type','" . $path . $filename . "')";
+    $path="./upload/".$save_name.$subname;
+    
+    move_uploaded_file($_FILES['file']['tmp_name'] , $path);
+
+    $sql="insert into files (`name`,`type`,`path`) values('$origin_name','$type','$path')";
 
     $result=$pdo->exec($sql);
     if($result==1){
@@ -62,6 +77,7 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
         <td>id</td>
         <td>name</td>
         <td>type</td>
+        <td>縮圖</td>
         <td>path</td>
         <td>create time</td>
         <td>操作</td>
@@ -76,6 +92,7 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
         <td><?=$file['id'];?></td>
         <td><?=$file['name'];?></td>
         <td><?=$file['type'];?></td>
+        <td><img src="<?=$file['path'];?>" style="width:100px ;height:50px;"></td>
         <td><?=$file['path'];?></td>
         <td><?=$file['create_time'];?></td>
         <td>
