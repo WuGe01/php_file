@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 
--- 伺服器版本： 10.3.16-MariaDB
--- PHP 版本： 7.3.7
+-- 產生時間： 2019-11-08 15:34:37
+-- 伺服器版本： 10.4.6-MariaDB
+-- PHP 版本： 7.3.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -36,7 +36,8 @@ CREATE TABLE `files` (
   `create_time` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '產生時間',
   `update_time` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '更新時間',
   `see` tinyint(1) NOT NULL DEFAULT 1 COMMENT '使用與否',
-  `note` varchar(168) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '說明'
+  `note` varchar(168) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '說明',
+  `thmb` varchar(168) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
