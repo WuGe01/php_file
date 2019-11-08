@@ -15,9 +15,15 @@
 4.fclose() 關閉檔案
 *****************************************************/
 
-$file=fopen("hello.txt","w");
+$file=fopen("etax.csv","w");
 
-$str="hello world! \r\ntoday is a good day,very good day";
+$str="";
+for($i=0;$i<100;$i++){
+    $num=rand(10000000,99999999);
+    $month=rand(1,12);
+    $str=$str.$num.",".$month."\r\n";
+}
+
 
 fwrite($file,$str);
 
