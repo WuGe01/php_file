@@ -1,6 +1,6 @@
 <?php
-$dsn="mysql:host=localhost;charset=utf8;dbname=";
-$pdo=new PDO($dsn,"","");
+$dsn="mysql:host=localhost;charset=utf8;dbname=upload";
+$pdo=new PDO($dsn,"root","mack");
 
 if(!empty($_FILES) && $_FILES['file']['error']==0){
     $note=$_POST['note'];

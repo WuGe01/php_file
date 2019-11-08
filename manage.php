@@ -5,8 +5,8 @@
  * 3.取得檔案資訊並寫入資料表
  * 4.製作檔案管理功能頁面
  */
-$dsn="mysql:host=localhost;charset=utf8;dbname=";
-$pdo=new PDO($dsn,"","");
+$dsn="mysql:host=localhost;charset=utf8;dbname=upload";
+$pdo=new PDO($dsn,"root","mack");
 
 if(!empty($_FILES) && $_FILES['file']['error']==0){
 

@@ -24,8 +24,8 @@ a{
 </style>
 <?php
 
-$dsn="mysql:host=localhost;charset=utf8;dbname=";
-$pdo=new PDO($dsn,"","");
+$dsn="mysql:host=localhost;charset=utf8;dbname=upload";
+$pdo=new PDO($dsn,"root","mack");
 $id=$_GET['id'];
 
 if(!empty($_GET['do'])){
