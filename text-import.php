@@ -59,8 +59,7 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
  */
 
 if(file_exists("./upload/tmp.txt")){
-$dsn="mysql:host=localhost;charset=utf8;dbname=etax";
-$pdo=new PDO($dsn,"root","mack");
+  include_once "base.php";
 
 $file=fopen("./upload/tmp.txt","r");
 $line=fgets($file);  //從第一行開始讀起  ,但不處理第一行的資料

@@ -9,8 +9,7 @@
  *   ->圖形驗證碼
  * 5.輸出檔案
  */
-$dsn="mysql:host=localhost;charset=utf8;dbname=upload";
-$pdo=new PDO($dsn,"root","mack");
+include_once "base.php";
 
 if(!empty($_FILES) && $_FILES['file']['error']==0){
 
@@ -37,16 +36,25 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
     }
 
     $imgSrc=$path;
+
+    //取得來源圖片資訊
     $imgInfo=getimagesize($imgSrc);
+
+    //設定縮放比例
     $rate=0.2;
     
     //計算縮放後的大小
     $dst_w=$imgInfo[0]*$rate;
     $dst_h=$imgInfo[1]*$rate;
     
+    //建立縮圖圖層畫布及來源圖片轉成圖形資源
     $thm=imagecreatetruecolor($dst_w,$dst_h);
     $src=imagecreatefrompng($imgSrc);
+
+    //進行縮放
     imagecopyresampled($thm,$src,0,0,0,0,$dst_w,$dst_h,$imgInfo[0],$imgInfo[1]);
+
+    //儲存縮圖
     imagepng($thm,$thmbPath);
 
 
@@ -59,7 +67,7 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>文字檔案匯入</title>
+    <title>PHP圖形處理</title>
     <link rel="stylesheet" href="style.css">
     <style>
     a{
@@ -73,7 +81,7 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
     </style>    
 </head>
 <body>
-<h1 class="header">圖形處理練習</h1>
+<h1 class="header">圖形處理練習-縮放</h1>
 <!---建立檔案上傳機制--->
 <form action="image.php" method="post" enctype="multipart/form-data">
   檔案：<input type="file" name="file" ><br><br>

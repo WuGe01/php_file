@@ -1,9 +1,13 @@
 <?php
-/**
- * 1.建立資料庫及資料表來儲存檔案資訊
- * 2.建立上傳表單頁面
- * 3.取得檔案資訊並寫入資料表
- * 4.製作檔案管理功能頁面
+/****
+ * 1.建立資料庫及資料表
+ * 2.建立上傳圖案機制
+ * 3.取得圖檔資源
+ * 4.進行圖形處理
+ *   ->圖形縮放
+ *   ->圖形加邊框
+ *   ->圖形驗證碼
+ * 5.輸出檔案
  */
 include_once "base.php";
 
@@ -13,11 +17,12 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
     $type=$_FILES['file']['type'];
     $filename=$_FILES['file']['name'];
     $path="./upload/" . $filename;
+    $thmbPath="./thmb/s_" . $filename;
     
     move_uploaded_file($_FILES['file']['tmp_name'] , $path);
 
-    $sql="insert into files (`name`,`type`,`path`,`note`) values('$filename','$type','$path','$note')";
-
+    $sql="insert into files (`name`,`type`,`path`,`note`,`thmb`) values('$filename','$type','$path','$note','$thmbPath')";
+    
     $result=$pdo->exec($sql);
 
     if($result==1){
@@ -29,6 +34,48 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
         echo "DB有誤";
 
     }
+
+    $imgSrc=$path;
+
+    //取得圖片資訊
+    $imgInfo=getimagesize($imgSrc);
+
+    //設定縮放比例
+    $rate=0.2;
+
+    //設定邊框厚度
+    $border=5;
+
+    //計算縮放後的長寬
+    $dst_w=$imgInfo[0]*$rate;
+    $dst_h=$imgInfo[1]*$rate;
+    
+    //建立空白畫布及來源圖片資源
+    $thm=imagecreatetruecolor($dst_w,$dst_h);
+    $src=imagecreatefrompng($imgSrc);
+
+    //產生縮放的圖檔
+    imagecopyresampled($thm,$src,0,0,0,0,$dst_w,$dst_h,$imgInfo[0],$imgInfo[1]);
+
+    
+    //計算邊框所需的圖層大小    
+    $bd_w=$dst_w+$border*2;
+    $bd_h=$dst_h+$border*2;
+
+    //建立空白畫布來做為底圖
+    $bdImage=imagecreatetruecolor($bd_w,$bd_h);
+
+    //建立圖層顏色並填色
+    $red=imagecolorallocate($bdImage, 255, 0, 0);
+    imagefill($bdImage,0,0,$red);
+
+    //圖形資源進行定位及合併
+    imagecopymerge($bdImage,$thm,$border,$border,0,0,$dst_w,$dst_h,100);
+
+    //儲存縮圖
+    imagepng($bdImage,$thmbPath);
+
+
 }
 
 ?>
@@ -38,7 +85,7 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>檔案管理功能</title>
+    <title>PHP圖形處理-加邊框</title>
     <link rel="stylesheet" href="style.css">
     <style>
     a{
@@ -49,12 +96,12 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
         box-shadow: 1px 1px 3px #ccc;
     }
     
-    </style>
+    </style>    
 </head>
 <body>
-<h1 class="header">檔案管理練習</h1>
-<!----建立上傳檔案表單及相關的檔案資訊存入資料表機制----->
-<form action="manage.php" method="post" enctype="multipart/form-data">
+<h1 class="header">圖形處理練習-加邊框</h1>
+<!---建立檔案上傳機制--->
+<form action="image2.php" method="post" enctype="multipart/form-data">
   檔案：<input type="file" name="file" ><br><br>
   說明：<input type="text" name="note" ><br>
   <input type="submit" value="上傳">
@@ -83,7 +130,7 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
         <td><?=$file['id'];?></td>
         <td><?=$file['name'];?></td>
         <td><?=$file['type'];?></td>
-        <td><img src="<?=$file['path'];?>" style="width:100px;height:50px;"></td>
+        <td><a href="<?=$file['path'];?>"><img src="<?=$file['thmb'];?>"></a></td>
         <td><?=$file['path'];?></td>
         <td><?=$file['note'];?></td>
         <td><?=$file['create_time'];?></td>
@@ -99,7 +146,6 @@ if(!empty($_FILES) && $_FILES['file']['error']==0){
     ?>
 
 </table>
-
 
 </body>
 </html>
